@@ -13,7 +13,8 @@ def mqtt_connect() :
         # Subscribe here!
     client = mqtt.Client("mqtt-test") # client ID "mqtt-test"
     client.on_connect = on_connect
-    client.connect('10.1.45.34', 1883)
+    #client.connect('10.1.45.34', 1883)
+    client.connect('broker.hivemq.com',1883)
     return client
 
 def publish(client):
@@ -22,7 +23,7 @@ def publish(client):
         time.sleep(0.002)
         dt=str(datetime.now())
         print(dt)
-        result = client.publish("data-raket-topic",dt)
+        result = client.publish("data-raket-topic","ax1;ay1;az1;bx1;by1;bz1;cx1;cy1;cz1;ax2;ay2;az2;bx2;by2;bz2;cx2;cy2;cz2")
         status=result[0]
         if(status==0):
             print("succes")
