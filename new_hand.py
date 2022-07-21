@@ -1,17 +1,11 @@
-# Simplistic data recording
-from gc import collect
-from logging.config import listen
-from multiprocessing.connection import Listener
 import time
-from datetime import datetime
 import multiprocessing
 import numpy as np
 import pandas as pd
-from pynput import keyboard
+
 from pyomyo import Myo, emg_mode
 
-
-def data_worker(mode, seconds,filepath):
+def data_worker(mode, seconds, filepath):
 	collect = True
 
 	# ------------ Myo Setup ---------------
@@ -21,7 +15,7 @@ def data_worker(mode, seconds,filepath):
 	myo_data = []
 
 	def add_to_queue(emg, movement):
-		myo_data.append((emg+(str(datetime.now()),)))
+		myo_data.append(emg)
 
 	m.add_emg_handler(add_to_queue)
 
@@ -42,7 +36,6 @@ def data_worker(mode, seconds,filepath):
 	while collect:
 		if (time.time() - start_time < seconds):
 			m.run()
-			print((time.time()-start_time))
 		else:
 			collect = False
 			collection_time = time.time() - start_time
@@ -51,15 +44,15 @@ def data_worker(mode, seconds,filepath):
 			print(len(myo_data), "frames collected")
 
 			# Add columns and save to df
-			myo_cols = ["Channel_1", "Channel_2", "Channel_3", "Channel_4", "Channel_5", "Channel_6", "Channel_7", "Channel_8","Timestamp"]
+			myo_cols = ["Channel_1", "Channel_2", "Channel_3", "Channel_4", "Channel_5", "Channel_6", "Channel_7", "Channel_8"]
 			myo_df = pd.DataFrame(myo_data, columns=myo_cols)
 			myo_df.to_csv(filepath, index=False)
 			print("CSV Saved at: ", filepath)
 
-
 # -------- Main Program Loop -----------
 if __name__ == '__main__':
-	file_name = "_test_emg.csv"
-	mode = emg_mode.RAW
-	p = multiprocessing.Process(target=data_worker, args=(mode, 10,file_name))
+	seconds = 10
+	file_name = str(seconds)+"_test_emg.csv"
+	mode = emg_mode.PREPROCESSED
+	p = multiprocessing.Process(target=data_worker, args=(mode, seconds, file_name))
 	p.start()

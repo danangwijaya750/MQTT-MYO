@@ -23,7 +23,7 @@ def publish(client):
         time.sleep(0.002)
         dt=str(datetime.now())
         print(dt)
-        result = client.publish("data-raket-topic","ax1;ay1;az1;bx1;by1;bz1;cx1;cy1;cz1;ax2;ay2;az2;bx2;by2;bz2;cx2;cy2;cz2")
+        result = client.publish("data_raket_topic","ax1;ay1;az1;bx1;by1;bz1;cx1;cy1;cz1;ax2;ay2;az2;bx2;by2;bz2;cx2;cy2;cz2")
         status=result[0]
         if(status==0):
             print("succes")
